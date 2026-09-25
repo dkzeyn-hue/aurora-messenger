@@ -6,22 +6,16 @@ gets for free: file picker for photo/media uploads, microphone permission for vo
 messages, back-button navigation, session persistence, and external links opening in
 the system browser.
 
-## 🌍 Hosted instance (running in my sandbox)
+## 🌍 Get a server (one click)
 
-**https://groundwater-logging-fragrance-passion.trycloudflare.com**
+The easiest way to run Aurora for everyone:
 
-A public HTTPS host I run for you via a Cloudflare tunnel. The APK below comes
-**preconfigured to it** — install the APK, open it, chat. No PC needed.
+1. Open the project on GitHub: **github.com/dkzeyn-hue/aurora-messenger**
+2. Click **Deploy to Render** (or Railway / Fly.io) at the top of the README
+3. Log in with GitHub → wait ~3 minutes → you get a permanent HTTPS URL
 
-Because the address can change when the tunnel restarts, the app lets you **edit the
-server address at runtime**: first launch shows a "Connect to Aurora" screen, and the
-"Can't reach Aurora" dialog has a **Change server** button. No rebuild ever needed.
-
-> ⚠️ Honest limits of my host: it lives inside our session sandbox — it's awake while
-> we're working together and sleeps between visits (message me and I'll wake it up).
-> Your accounts & messages persist in the workspace database. For a permanent 24/7
-> host you'd deploy `aurora/` to Render/Railway/Fly/a VPS with your own account —
-> happy to prepare that whole package.
+Then enter that URL on the app's Connect screen (first launch) — or tap
+**Change server** in the connection-error dialog. No rebuild ever needed.
 
 ```
 aurora-android/

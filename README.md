@@ -1,5 +1,14 @@
 # 🌌 Aurora Messenger
 
+[![Deploy to Render](https://render.com/images/deploy-to-render.svg)](https://render.com/deploy?repo=https://github.com/dkzeyn-hue/aurora-messenger)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/new/github?repo=https%3A%2F%2Fgithub.com%2Fdkzeyn-hue%2Faurora-messenger)
+[![Deploy to Fly.io](https://fly.io/deploy/button.svg)](https://fly.io/launch?repo=https://github.com/dkzeyn-hue/aurora-messenger)
+
+**Aurora is now public!** Click one of the buttons above to run your own live instance
+in ~3 minutes (log in with GitHub, everything else is automatic — Dockerfile included).
+Then share the URL, or install `aurora-android/apk/Aurora-debug.apk` and point it at
+your server on first launch.
+
 A complete, original-branded messaging platform — **username + password only**, no email,
 no phone, no external auth. Telegram-inspired feature set, built with a vanilla stack
 (HTML5 / CSS / JS frontend, Node.js + Express + SQLite + Socket.IO backend) and a native

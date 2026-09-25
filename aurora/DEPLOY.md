@@ -1,5 +1,13 @@
 # 🚀 Deploying Aurora to a permanent 24/7 host
 
+**Fastest way — one click (pick any):**
+
+- **Render:** [![Deploy to Render](https://render.com/images/deploy-to-render.svg)](https://render.com/deploy?repo=https://github.com/dkzeyn-hue/aurora-messenger)
+- **Railway:** [![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/new/github?repo=https%3A%2F%2Fgithub.com%2Fdkzeyn-hue%2Faurora-messenger)
+- **Fly.io:** [![Deploy to Fly.io](https://fly.io/deploy/button.svg)](https://fly.io/launch?repo=https://github.com/dkzeyn-hue/aurora-messenger)
+
+Log in with GitHub and the host builds the Dockerfile automatically.
+
 The sandbox host I run for you sleeps between our sessions (and its tunnel URL changes
 each wake-up). For an always-on Aurora with a **fixed address**, deploy the `aurora/`
 folder to a cloud host with your own account. The app is ready for it: it respects
