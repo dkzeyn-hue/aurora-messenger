@@ -1,0 +1,19 @@
+# Render Blueprint — deploy Aurora in one click
+# 1. Push this folder to a GitHub repo
+# 2. render.com → New → Blueprint → select the repo
+# 3. Done: you get https://your-app.onrender.com (HTTPS + WebSockets included)
+services:
+  - type: web
+    name: aurora-messenger
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # set a fixed secret so logins survive restarts (Render → Environment → generate)
+      - key: JWT_SECRET
+        generateValue: true
+      # NOTE (free plan): the filesystem is ephemeral — the DB and uploaded media
+      # reset on every redeploy. Attach a persistent Disk (paid) at /app/data,
+      # or use Railway/Fly.io free volumes (see DEPLOY.md) for durable storage.

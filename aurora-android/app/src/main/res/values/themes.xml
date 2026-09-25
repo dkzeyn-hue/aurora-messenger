@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Aurora" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/aurora_bg</item>
+        <item name="android:statusBarColor">@color/aurora_bg</item>
+        <item name="android:navigationBarColor">@color/aurora_bg</item>
+        <item name="colorPrimary">@color/aurora_accent</item>
+        <item name="colorPrimaryDark">@color/aurora_bg</item>
+        <item name="colorAccent">@color/aurora_accent_2</item>
+    </style>
+</resources>

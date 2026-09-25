@@ -1,0 +1,17 @@
+{
+  "name": "Aurora Messenger",
+  "short_name": "Aurora",
+  "description": "Fast, secure messaging with email identity — chats, groups, channels and stories.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1022",
+  "theme_color": "#0d1022",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "New chat", "url": "/#/new" },
+    { "name": "Stories", "url": "/#stories" }
+  ]
+}

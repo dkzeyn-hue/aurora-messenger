@@ -1,0 +1,10 @@
+# safety net (each subproject also has its own .gitignore)
+node_modules/
+.gradle/
+build/
+app/build/
+local.properties
+.idea/
+*.iml
+.DS_Store
+.env

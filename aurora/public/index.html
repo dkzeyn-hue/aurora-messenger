@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0d1022">
+  <meta name="description" content="Aurora — fast, secure messaging built around your username. Chats, groups, channels and stories.">
+  <title>Aurora</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <div id="boot-splash" class="boot-splash">
+      <div class="boot-logo">
+        <svg viewBox="0 0 120 120" width="96" height="96" aria-hidden="true">
+          <defs>
+            <linearGradient id="bootg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#7c5cff"/><stop offset=".5" stop-color="#4cc9f0"/><stop offset="1" stop-color="#b967ff"/>
+            </linearGradient>
+          </defs>
+          <path d="M60 8 C 85 8 112 30 112 60 C 112 90 85 112 60 112 C 45 112 34 105 28 96 C 46 96 60 84 60 68 C 60 56 50 50 42 50 C 33 50 26 56 24 64 C 18 52 16 40 20 30 C 28 16 44 8 60 8 Z" fill="url(#bootg)"/>
+          <circle cx="72" cy="46" r="10" fill="#fff" opacity=".92"/>
+        </svg>
+      </div>
+      <div class="boot-name">Aurora</div>
+      <div class="boot-spinner"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <div id="modal-root"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
