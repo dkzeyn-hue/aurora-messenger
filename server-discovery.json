@@ -1,0 +1,5 @@
+{
+  "server": "https://suffering-hiking-baseball-ids.trycloudflare.com",
+  "note": "Live Aurora server pointer. The Android app fetches this at startup and connects automatically — update this file when the server moves; installed apps follow within minutes.",
+  "updated": "2026-09-25T04:45:15Z"
+}

@@ -6,16 +6,23 @@ gets for free: file picker for photo/media uploads, microphone permission for vo
 messages, back-button navigation, session persistence, and external links opening in
 the system browser.
 
-## 🌍 Get a server (one click)
+## 🌍 Server & auto-discovery
 
-The easiest way to run Aurora for everyone:
+**Default behavior — zero setup:** on launch the app fetches the live Aurora server
+address from this project's GitHub Pages:
 
-1. Open the project on GitHub: **github.com/dkzeyn-hue/aurora-messenger**
-2. Click **Deploy to Render** (or Railway / Fly.io) at the top of the README
-3. Log in with GitHub → wait ~3 minutes → you get a permanent HTTPS URL
+```
+https://dkzeyn-hue.github.io/aurora-messenger/server-discovery.json
+```
 
-Then enter that URL on the app's Connect screen (first launch) — or tap
-**Change server** in the connection-error dialog. No rebuild ever needed.
+and connects automatically. If the backend ever moves, that one file is updated and
+every installed app follows — no rebuild, no manual changes.
+
+**Use your own server instead:** start an instance with one click (Render / Railway /
+Fly.io buttons in the repo README), then either:
+- enter its URL on the app's Connect screen (**Change server** in the error dialog) —
+  manual choice always overrides auto-discovery, or
+- edit `server-discovery.json` in the repo to point **all** apps at your server.
 
 ```
 aurora-android/

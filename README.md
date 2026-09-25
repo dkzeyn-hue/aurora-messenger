@@ -4,10 +4,15 @@
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/new/github?repo=https%3A%2F%2Fgithub.com%2Fdkzeyn-hue%2Faurora-messenger)
 [![Deploy to Fly.io](https://fly.io/deploy/button.svg)](https://fly.io/launch?repo=https://github.com/dkzeyn-hue/aurora-messenger)
 
-**Aurora is now public!** Click one of the buttons above to run your own live instance
-in ~3 minutes (log in with GitHub, everything else is automatic — Dockerfile included).
-Then share the URL, or install `aurora-android/apk/Aurora-debug.apk` and point it at
-your server on first launch.
+**🌐 Live server status: [aurora-messenger](https://dkzeyn-hue.github.io/aurora-messenger/server-discovery.json)**
+
+**Aurora is public!** Install `aurora-android/apk/Aurora-debug.apk` on any Android phone —
+it **auto-discovers the live server** at startup (via `server-discovery.json` on this
+repo's GitHub Pages) and connects by itself. No setup, and if the server ever moves,
+every installed app follows automatically — no update needed. Prefer your own instance?
+Click one of the deploy buttons above (~3 minutes, Dockerfile included) and either point
+the app at it (Connect screen) or update `server-discovery.json` to make it the default
+for everyone.
 
 A complete, original-branded messaging platform — **username + password only**, no email,
 no phone, no external auth. Telegram-inspired feature set, built with a vanilla stack

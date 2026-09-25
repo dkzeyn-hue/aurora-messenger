@@ -16,7 +16,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -32,7 +31,9 @@ import androidx.core.content.ContextCompat
  *
  * The whole UI is the existing HTML5 app running in a WebView; this activity adds
  * the native glue that a plain WebView lacks:
- *  • server address  → editable on first launch / from the error dialog (no rebuild needed)
+ *  • server auto-discovery → fetches the current live server address from the project's
+ *    GitHub Pages site at startup, so the app keeps working even when the server moves.
+ *    A manual address (Connect dialog) always overrides discovery.
  *  • file chooser    → profile photo upload & media sharing (<input type="file">)
  *  • mic permission  → recording voice messages
  *  • back button     → walks the app's history like the browser does
@@ -45,6 +46,18 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "Aurora"
         private const val PREFS = "aurora"
         private const val KEY_SERVER = "server_url"
+        private const val KEY_MANUAL = "manual_server"
+
+        /**
+         * Fixed public pointers to the live Aurora server (hosted with this project on
+         * GitHub, so they are always reachable). The app reads `server-discovery.json`
+         * at startup and connects to whatever address it contains — moving the backend
+         * then only requires updating that file, not the app.
+         */
+        private val DISCOVERY_URLS = arrayOf(
+            "https://dkzeyn-hue.github.io/aurora-messenger/server-discovery.json",
+            "https://raw.githubusercontent.com/dkzeyn-hue/aurora-messenger/main/server-discovery.json"
+        )
     }
 
     private lateinit var web: WebView
@@ -60,6 +73,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveServerUrl(url: String) {
         getSharedPreferences(PREFS, MODE_PRIVATE).edit().putString(KEY_SERVER, url).apply()
+    }
+
+    /** True when the user picked the address by hand — manual choice always wins. */
+    private fun isManualServer(): Boolean =
+        getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean(KEY_MANUAL, false)
+
+    private fun setManualServer(v: Boolean) {
+        getSharedPreferences(PREFS, MODE_PRIVATE).edit().putBoolean(KEY_MANUAL, v).apply()
     }
 
     /** Result of the native file picker (avatar upload, media sharing). */
@@ -94,10 +115,49 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState != null) {
             web.restoreState(savedInstanceState)
-            if (web.url.isNullOrEmpty()) web.loadUrl(serverUrl())
+            if (web.url.isNullOrEmpty()) resolveServerAndLoad()
         } else {
-            web.loadUrl(serverUrl())
+            resolveServerAndLoad()
         }
+    }
+
+    /** Decide which server to load: the user's manual choice, or the auto-discovered address. */
+    private fun resolveServerAndLoad() {
+        if (isManualServer()) {
+            web.loadUrl(serverUrl())
+            return
+        }
+        Thread {
+            val discovered = discoverServer()
+            runOnUiThread {
+                if (discovered != null) {
+                    if (discovered != serverUrl()) saveServerUrl(discovered)
+                    web.loadUrl(discovered)
+                } else {
+                    // discovery unreachable — fall back to the last known address
+                    web.loadUrl(serverUrl())
+                }
+            }
+        }.start()
+    }
+
+    /** Fetch the current server address from the public discovery pointers. */
+    private fun discoverServer(): String? {
+        for (base in DISCOVERY_URLS) {
+            try {
+                val conn = java.net.URI.create(base).toURL().openConnection() as java.net.HttpURLConnection
+                conn.connectTimeout = 4000
+                conn.readTimeout = 4000
+                if (conn.responseCode == 200) {
+                    val body = conn.inputStream.bufferedReader().use { it.readText() }
+                    val m = Regex("\"server\"\\s*:\\s*\"(https?://[^\"]+)\"").find(body)
+                    if (m != null) return m.groupValues[1]
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "discovery failed for $base: ${e.message}")
+            }
+        }
+        return null
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -180,7 +240,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** First-launch / reconfigure screen: which Aurora server should the app connect to? */
+    /** Manual server override: which Aurora server should the app connect to? */
     private fun showServerDialog(prefill: String = serverUrl()) {
         if (serverDialog?.isShowing == true) return
         val input = EditText(this).apply {
@@ -205,6 +265,7 @@ class MainActivity : AppCompatActivity() {
             if (url.isEmpty()) return
             if (!url.startsWith("http://") && !url.startsWith("https://")) url = "https://$url"
             saveServerUrl(url)
+            setManualServer(true)
             serverDialog?.dismiss()
             errorDialog?.dismiss()
             web.clearCache(true)
@@ -218,9 +279,11 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Connect to Aurora")
             .setView(content)
             .setPositiveButton("Connect") { _, _ -> connect() }
-            .setNeutralButton("Reset default") { _, _ ->
-                saveServerUrl(ServerConfig.DEFAULT_SERVER_URL)
-                web.loadUrl(ServerConfig.DEFAULT_SERVER_URL)
+            .setNeutralButton("Auto (default)") { _, _ ->
+                setManualServer(false)
+                errorDialog?.dismiss()
+                web.loadUrl(serverUrl())
+                resolveServerAndLoad()
             }
             .setCancelable(false)
             .show()
@@ -232,9 +295,9 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Can't reach Aurora")
             .setMessage(
                 "The Aurora server is not reachable at\n\n${serverUrl()}\n\n" +
-                    "Check your internet connection, or point the app at a different server."
+                    "Check your internet connection, switch to auto-discovery, or enter a different server."
             )
-            .setPositiveButton("Retry") { _, _ -> web.loadUrl(serverUrl()) }
+            .setPositiveButton("Retry") { _, _ -> resolveServerAndLoad() }
             .setNeutralButton("Change server") { _, _ -> showServerDialog() }
             .setNegativeButton("Exit") { _, _ -> finish() }
             .setCancelable(false)
