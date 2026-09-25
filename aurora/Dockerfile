@@ -4,9 +4,16 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# install production deps (better-sqlite3 ships prebuilt binaries for linux x64/arm64)
+# Install deps: python3/make/g++ are required when better-sqlite3 has no
+# prebuilt binary for the platform and node-gyp compiles it from source.
+# The toolchain is purged again in the same layer after npm ci so the
+# final image stays small (runtime never needs to compile anything).
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3 make g++ \
+ && npm ci --omit=dev \
+ && apt-get purge -y --auto-remove python3 make g++ \
+ && rm -rf /var/lib/apt/lists/*
 
 # app code
 COPY server ./server
