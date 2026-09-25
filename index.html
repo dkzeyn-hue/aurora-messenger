@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aurora Messenger — live status & download</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0b0e24; color: #eef0ff; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .card {
+    max-width: 460px; width: 100%; text-align: center;
+    background: linear-gradient(160deg, #141834, #0d1030);
+    border: 1px solid #272c58; border-radius: 24px; padding: 40px 28px;
+    box-shadow: 0 24px 80px rgba(0,0,0,.5);
+  }
+  .logo {
+    width: 84px; height: 84px; margin: 0 auto 16px; border-radius: 26px;
+    background: linear-gradient(135deg, #7c5cff, #4cc9f0);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; font-weight: 900; color: #fff; letter-spacing: -2px;
+  }
+  h1 { font-size: 26px; font-weight: 800; }
+  .tag { color: #9aa1d6; font-size: 14px; margin-top: 6px; line-height: 1.5; }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px; margin: 22px 0 6px;
+    padding: 8px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 600;
+    background: rgba(255,255,255,.06); border: 1px solid #272c58;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #666; }
+  .live .dot { background: #2ee06f; box-shadow: 0 0 12px #2ee06f; }
+  .live { color: #2ee06f; border-color: rgba(46,224,111,.35); }
+  .down .dot { background: #ff5470; box-shadow: 0 0 12px #ff5470; }
+  .down { color: #ff8fa0; border-color: rgba(255,84,112,.35); }
+  .server-url { font-size: 11.5px; color: #6d74ab; margin-bottom: 24px; word-break: break-all; }
+  .btn {
+    display: block; width: 100%; padding: 15px 18px; margin-bottom: 12px;
+    border-radius: 16px; font-size: 15.5px; font-weight: 700; text-decoration: none;
+    transition: transform .12s ease;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: linear-gradient(135deg, #7c5cff, #4cc9f0); color: #fff; }
+  .btn-soft { background: rgba(255,255,255,.07); color: #eef0ff; border: 1px solid #323763; }
+  .note { font-size: 12px; color: #6d74ab; margin-top: 18px; line-height: 1.6; }
+  .note a { color: #8f7bff; }
+  .sleepnote { display: none; font-size: 12.5px; color: #ffb86b; margin: 10px 0 4px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">A</div>
+  <h1>Aurora Messenger</h1>
+  <div class="tag">Username + password only. No email, no phone.<br>Chats, groups, channels, stories — free for everyone.</div>
+
+  <div class="status" id="status"><span class="dot"></span><span id="status-text">checking server…</span></div>
+  <div class="sleepnote" id="sleepnote">💤 The live server is sleeping. Ask for it to be woken up — it returns in under a minute, and the app reconnects by itself.</div>
+  <div class="server-url" id="server-url">&nbsp;</div>
+
+  <a class="btn btn-primary" id="open-app" href="#">💬 Open Aurora in browser</a>
+  <a class="btn btn-soft" id="get-apk" href="https://raw.githubusercontent.com/dkzeyn-hue/aurora-messenger/main/aurora-android/apk/Aurora-debug.apk">📱 Download Android app (APK)</a>
+
+  <div class="note">
+    The Android app finds the live server automatically — no setup needed.<br>
+    Source code &amp; self-hosting: <a href="https://github.com/dkzeyn-hue/aurora-messenger">github.com/dkzeyn-hue/aurora-messenger</a>
+  </div>
+</div>
+
+<script>
+(async () => {
+  const statusEl = document.getElementById('status');
+  const textEl = document.getElementById('status-text');
+  const urlEl = document.getElementById('server-url');
+  const openEl = document.getElementById('open-app');
+  const sleepEl = document.getElementById('sleepnote');
+  let server = null;
+  try {
+    const r = await fetch('server-discovery.json', { cache: 'no-store' });
+    const j = await r.json();
+    server = j.server;
+  } catch (e) {}
+  if (!server) { textEl.textContent = 'status unknown'; return; }
+  urlEl.textContent = server.replace(/^https?:\/\//, '');
+  openEl.href = server;
+  try {
+    const h = await fetch(server + '/api/health', { cache: 'no-store' });
+    if (h.ok) {
+      statusEl.classList.add('live');
+      textEl.textContent = 'Server live — chatting now';
+      return;
+    }
+  } catch (e) {}
+  statusEl.classList.add('down');
+  textEl.textContent = 'Server sleeping';
+  sleepEl.style.display = 'block';
+  openEl.onclick = (ev) => { ev.preventDefault(); alert('The live server is currently sleeping — it will be back shortly. Meanwhile you can already install the Android app; it connects by itself as soon as the server is awake.'); };
+})();
+</script>
+</body>
+</html>
